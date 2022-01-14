@@ -8,7 +8,7 @@ import 'dart:developer' as developer;
 class RegisterPage extends StatefulWidget {
   late TextEditingController tecId, tecPwd, tecEmail;
 
-  RegisterPage({Key? key}) : super(key: key) {
+  RegisterPage(String title, {Key? key}) : super(key: key) {
     tecId = TextEditingController();
     tecEmail = TextEditingController();
     tecPwd = TextEditingController();
