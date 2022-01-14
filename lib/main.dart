@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynov_chat_flutter/LoginPage.dart';
+import 'package:ynov_chat_flutter/RegisterPage.dart';
 
 import 'MyHomePage.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: RegisterPage(),
     );
   }
 }

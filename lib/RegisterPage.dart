@@ -5,24 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
 
-class LoginPage extends StatefulWidget {
-  late TextEditingController tecId, tecPwd;
+class RegisterPage extends StatefulWidget {
+  late TextEditingController tecId, tecPwd, tecEmail;
 
-  LoginPage({Key? key}) : super(key: key) {
+  RegisterPage({Key? key}) : super(key: key) {
     tecId = TextEditingController();
+    tecEmail = TextEditingController();
     tecPwd = TextEditingController();
   }
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login"),
+        title: Text("Register"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -35,7 +36,16 @@ class _LoginPageState extends State<LoginPage> {
                 child:  TextFormField(
                   controller: widget.tecId,
                   decoration: const InputDecoration(
-                      hintText: "Login"
+                      hintText: "Username"
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 200.0,
+                child:  TextFormField(
+                  controller: widget.tecEmail,
+                  decoration: const InputDecoration(
+                      hintText: "Email"
                   ),
                 ),
               ),
@@ -51,12 +61,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const Spacer(),
               ElevatedButton(
-                  onPressed: () => _login(context),
-                  child: Text("Login".toUpperCase(),)
+                  onPressed: () => _register(context),
+                  child: Text("Register".toUpperCase(),)
               ),
               OutlinedButton(
                   onPressed: () {},
-                  child: Text("Register".toUpperCase(),)
+                  child: Text("Login".toUpperCase(),)
               )
             ],
           )
@@ -65,20 +75,23 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login(BuildContext context) {
+  void _register(BuildContext context) {
     String id = widget.tecId.text;
+    String email = widget.tecEmail.text;
     String password = widget.tecPwd.text;
 
-    SnackBar snackbar = SnackBar(
+    /*SnackBar snackbar = SnackBar(
       content: Text('$id:$password')
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);*/
 
     Future<http.Response> res = http.post(
-        Uri.parse("https://flutter-learning.mooo.com/auth/local/"),
+        Uri.parse("https://flutter-learning.mooo.com/auth/local/register/"),
         body: {
-          "identifier": id,
-          "password": password
+          "username": id,
+          "email": email,
+          "password": password,
+
         });
 
     res.then((value) {
@@ -87,10 +100,11 @@ class _LoginPageState extends State<LoginPage> {
         developer.log(bodyJson['jwt']);
       }
     }, onError: (obj) {
-      developer.log("Login Error : " + obj.toString());
+      developer.log("Register Error : " + obj.toString());
     });
 
     widget.tecId.text = "";
+    widget.tecEmail.text = "";
     widget.tecPwd.text = "";
   }
 }
