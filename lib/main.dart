@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynov_chat_flutter/LoginPage.dart';
 import 'package:ynov_chat_flutter/RegisterPage.dart';
 
-import 'MyHomePage.dart';
+import 'HomePage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +19,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: RegisterPage(),
+      routes: <String, WidgetBuilder> {
+        '/login': (BuildContext context) => LoginPage(),
+        '/register': (BuildContext context) => RegisterPage(),
+        '/home': (BuildContext context) => HomePage(title: "Home Page"),
+      },
     );
   }
 }
