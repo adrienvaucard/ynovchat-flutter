@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ynov_chat_flutter/LoginPage.dart';
 
 import 'MyHomePage.dart';
 
@@ -12,11 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Ynov Chat',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Ynov Chat Flutter'),
+      home: LoginPage(),
     );
   }
 }
