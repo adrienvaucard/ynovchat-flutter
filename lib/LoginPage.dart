@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   late TextEditingController tecId, tecPwd;
@@ -16,8 +17,24 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
-
 class _LoginPageState extends State<LoginPage> {
+  late FlutterSecureStorage storage;
+
+  @override
+  void initState() {
+    super.initState();
+    storage = new FlutterSecureStorage();
+    Future<void> value = storage.read(key: "jwt").then(
+      (value) {
+        if (value != null) {
+          developer.log(value.toString());
+          Navigator.of(context).pushNamed('/home');
+        } else {
+          developer.log("No Token Found");
+        }
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,14 +82,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login(BuildContext context) {
+  void _login(BuildContext context) async {
     String id = widget.tecId.text;
     String password = widget.tecPwd.text;
-
-    SnackBar snackbar = SnackBar(
-      content: Text('$id:$password')
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
 
     Future<http.Response> res = http.post(
         Uri.parse("https://flutter-learning.mooo.com/auth/local/"),
@@ -81,10 +93,12 @@ class _LoginPageState extends State<LoginPage> {
           "password": password
         });
 
-    res.then((value) {
+    res.then((value) async {
       if (value.statusCode == 200) {
         Map<String,dynamic> bodyJson = jsonDecode(value.body);
-        developer.log(bodyJson['jwt']);
+
+        await storage.write(key: "jwt", value: bodyJson["jwt"]);
+        Navigator.of(context).pushNamed('/home');
       }
     }, onError: (obj) {
       developer.log("Login Error : " + obj.toString());

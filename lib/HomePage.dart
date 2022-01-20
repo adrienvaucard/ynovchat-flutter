@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -26,12 +27,14 @@ class _HomePageState extends State<HomePage> {
   late StreamController<List<Message>> _streamControllerListMsgs;
   late Stream<List<Message>> _streamMsgs;
   late TextEditingController tecMsg;
+  late FlutterSecureStorage storage ;
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('fr_FR');
     setLocaleMessages("fr_short", FrShortMessages());
+    storage = new FlutterSecureStorage();
     tecMsg = TextEditingController();
     _streamControllerListMsgs = StreamController<List<Message>>();
     _streamMsgs = _streamControllerListMsgs.stream;
@@ -104,10 +107,11 @@ class _HomePageState extends State<HomePage> {
     return format(dateTime, locale: "fr_short");
   }
 
-  void fetchMessages() {
+  void fetchMessages() async {
+    String? token = await storage.read(key: "jwt");
     Future<Response> resMsgs = get(
-        Uri.parse("https://flutter-learning.mooo.com/messages"),
-        headers: { 'Authorization':"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQyNjcxMzMyLCJleHAiOjE2NDUyNjMzMzJ9.46AmdmoaNWPaYdDoR-4YImCSBNROendkxWD5_oz39Nc"}
+        Uri.parse("https://flutter-learning.mooo.com/messages?_limit=-1"),
+        headers: { 'Authorization':"Bearer ${token}"}
     );
     resMsgs.then(
         (value) {
@@ -124,10 +128,11 @@ class _HomePageState extends State<HomePage> {
         onError: (_, err) => log("Error while fetching messages"));
   }
 
-  void _sendMessage (BuildContext context) {
+  void _sendMessage (BuildContext context) async {
+    String? token = await storage.read(key: "jwt");
     Future<Response> res = post(
         Uri.parse("https://flutter-learning.mooo.com/messages/"),
-        headers: { 'Authorization':"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQyNjcxMzMyLCJleHAiOjE2NDUyNjMzMzJ9.46AmdmoaNWPaYdDoR-4YImCSBNROendkxWD5_oz39Nc"},
+        headers: { 'Authorization':"Bearer ${token}"},
         body: {
           "content": tecMsg.text,
         });
@@ -140,6 +145,8 @@ class _HomePageState extends State<HomePage> {
             content: Text("Message Sent")
         );
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
+
+        fetchMessages();
       }
     }, onError: (obj) {
       log("Send Error : " + obj.toString());
