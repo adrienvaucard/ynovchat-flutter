@@ -24,8 +24,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     items = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    _streamControllerListMsgs = new StreamController<List<Message>>();
+    _streamControllerListMsgs = StreamController<List<Message>>();
     _streamMsgs = _streamControllerListMsgs.stream;
+    fetchMessages();
   }
 
   @override
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         stream: _streamMsgs,
         builder: (context, snapshot) {
           if (snapshot.hasError) return const Icon(Icons.error);
-          if (!snapshot.hasData) return Center(child: const CircularProgressIndicator());
+          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
           return ListView.separated(
               itemCount: snapshot.data!.length,
               separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.5),
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
   void fetchMessages() {
     Future<Response> resMsgs = get(
         Uri.parse("https://flutter-learning.mooo.com/messages"),
-        headers: { 'Authorization':"Bearer TOKEN"}
+        headers: { 'Authorization':"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjQyNjcxMzMyLCJleHAiOjE2NDUyNjMzMzJ9.46AmdmoaNWPaYdDoR-4YImCSBNROendkxWD5_oz39Nc"}
     );
     resMsgs.then(
         (value) {
