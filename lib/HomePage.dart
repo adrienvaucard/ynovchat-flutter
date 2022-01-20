@@ -46,6 +46,13 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Home Page"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: (){
+                fetchMessages();
+              }),
+        ],
       ),
       body: Column(
         children: [
