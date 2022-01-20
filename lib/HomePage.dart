@@ -5,6 +5,9 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart';
 
 import 'Message.dart';
 
@@ -23,6 +26,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting('fr_FR');
+    setLocaleMessages("fr_short", FrShortMessages());
     items = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     _streamControllerListMsgs = StreamController<List<Message>>();
     _streamMsgs = _streamControllerListMsgs.stream;
@@ -45,12 +50,28 @@ class _HomePageState extends State<HomePage> {
               separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.5),
               itemBuilder: (context, index) =>
                 ListTile(
-                  title: Text("Message ${snapshot.data![index].content}")
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(snapshot.data![index].author.username),
+                      Text(
+                        formatDateString(snapshot.data![index].created_at),
+                        style: TextStyle(fontStyle: FontStyle.italic)
+                      ),
+                    ],
+                  ),
+                  subtitle: Text(snapshot.data![index].content),
                 )
           );
         }
       )
     );
+  }
+
+  String formatDateString(String isoDate) {
+    DateFormat df = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSZ", "fr_FR");
+    DateTime dateTime = df.parse(isoDate);
+    return format(dateTime, locale: "fr_short");
   }
 
   void fetchMessages() {
