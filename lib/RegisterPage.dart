@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Text("Register".toUpperCase(),)
               ),
               OutlinedButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/login'),
+                  onPressed: () => Navigator.of(context).pushReplacementNamed('/login'),
                   child: Text("Login".toUpperCase(),)
               )
             ],
@@ -96,13 +96,13 @@ class _RegisterPageState extends State<RegisterPage> {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Register Success"))
         );
+
+        widget.tecId.text = "";
+        widget.tecEmail.text = "";
+        widget.tecPwd.text = "";
       }
     }, onError: (obj) {
       developer.log("Register Error : " + obj.toString());
     });
-
-    widget.tecId.text = "";
-    widget.tecEmail.text = "";
-    widget.tecPwd.text = "";
   }
 }
