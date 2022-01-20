@@ -8,6 +8,8 @@ import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'Message.dart';
 
@@ -50,6 +52,7 @@ class _HomePageState extends State<HomePage> {
               separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.5),
               itemBuilder: (context, index) =>
                 ListTile(
+                  leading: Image.network("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/6e443f00-bb6b-41ea-ba1a-f0c52dfb7cdc/ddrhs33-df39d039-d9ec-4450-b3a6-5c125a38e1e7.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzZlNDQzZjAwLWJiNmItNDFlYS1iYTFhLWYwYzUyZGZiN2NkY1wvZGRyaHMzMy1kZjM5ZDAzOS1kOWVjLTQ0NTAtYjNhNi01YzEyNWEzOGUxZTcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.RnDoWNFkVfodcv1boGZ1lafSLMbTSwhe-37omwoGtA4"),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
