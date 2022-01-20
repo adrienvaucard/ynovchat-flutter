@@ -18,17 +18,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/login',
-      onGenerateRoute: (settings) {
-        if (settings.name == '/register') {
-          return MaterialPageRoute(builder: (BuildContext context) =>
-            RegisterPage(settings.arguments as String));
-        }
-      },
+      initialRoute: '/register',
       routes: <String, WidgetBuilder> {
         '/login': (BuildContext context) => LoginPage(),
-        //'/register': (BuildContext context) => RegisterPage(),
-        '/home': (BuildContext context) => HomePage(title: "Home Page"),
+        '/register': (BuildContext context) => RegisterPage(),
       },
     );
   }

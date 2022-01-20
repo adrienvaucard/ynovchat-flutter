@@ -8,7 +8,7 @@ import 'dart:developer' as developer;
 class RegisterPage extends StatefulWidget {
   late TextEditingController tecId, tecPwd, tecEmail;
 
-  RegisterPage(String title, {Key? key}) : super(key: key) {
+  RegisterPage({Key? key}) : super(key: key) {
     tecId = TextEditingController();
     tecEmail = TextEditingController();
     tecPwd = TextEditingController();
@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Text("Register".toUpperCase(),)
               ),
               OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.of(context).pushNamed('/login'),
                   child: Text("Login".toUpperCase(),)
               )
             ],
@@ -80,11 +80,6 @@ class _RegisterPageState extends State<RegisterPage> {
     String email = widget.tecEmail.text;
     String password = widget.tecPwd.text;
 
-    /*SnackBar snackbar = SnackBar(
-      content: Text('$id:$password')
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);*/
-
     Future<http.Response> res = http.post(
         Uri.parse("https://flutter-learning.mooo.com/auth/local/register/"),
         body: {
@@ -98,6 +93,9 @@ class _RegisterPageState extends State<RegisterPage> {
       if (value.statusCode == 200) {
         Map<String,dynamic> bodyJson = jsonDecode(value.body);
         developer.log(bodyJson['jwt']);
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Register Success"))
+        );
       }
     }, onError: (obj) {
       developer.log("Register Error : " + obj.toString());

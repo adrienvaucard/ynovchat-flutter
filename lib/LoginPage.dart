@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text("Login".toUpperCase(),)
               ),
               OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.of(context).pushNamed('/register'),
                   child: Text("Register".toUpperCase(),)
               )
             ],
