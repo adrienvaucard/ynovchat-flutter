@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ynov_chat_flutter/LoginPage.dart';
-import 'package:ynov_chat_flutter/RegisterPage.dart';
+import 'package:latlng/latlng.dart';
+import 'package:ynov_chat_flutter/pages/LoginPage.dart';
+import 'package:ynov_chat_flutter/pages/MapPage.dart';
+import 'package:ynov_chat_flutter/pages/RegisterPage.dart';
+import 'package:ynov_chat_flutter/routes.dart';
 
-import 'HomePage.dart';
+import 'pages/HomePage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,11 +24,19 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         primarySwatch: Colors.blue
       ),
-      initialRoute: '/login',
+
+      onGenerateRoute: (settings) {
+        if(settings.name == ROUTE_MAP_PAGE) {
+          return MaterialPageRoute(builder: (context) =>
+          MapPage(settings.arguments as LatLng));
+        }
+      },
+      initialRoute: ROUTE_LOGIN,
       routes: <String, WidgetBuilder> {
-        '/login': (BuildContext context) => LoginPage(),
-        '/register': (BuildContext context) => RegisterPage(),
-        '/home': (BuildContext context) => HomePage(),
+        ROUTE_LOGIN: (BuildContext context) => LoginPage(),
+        ROUTE_REGISTER: (BuildContext context) => RegisterPage(),
+        ROUTE_HOME_PAGE: (BuildContext context) => HomePage(),
+        //'/map': (BuildContext context) => MapPage(),
       },
     );
   }

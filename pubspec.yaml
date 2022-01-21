@@ -39,6 +39,11 @@ dependencies:
   timeago: ^3.1.0
   flutter_secure_storage: ^5.0.2
   url_launcher: ^6.0.18
+  geolocator: ^8.0.3
+  flutter_map: ^0.14.0
+  map: ^1.0.0
+  latlng: ^0.1.0
+  cached_network_image: ^3.2.0
 
 dev_dependencies:
   flutter_test:

@@ -6,16 +6,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:latlng/latlng.dart';
 import 'package:timeago/timeago.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:ynov_chat_flutter/bo/message.dart';
 
-import 'Message.dart';
-
+import 'package:ynov_chat_flutter/routes.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -59,6 +61,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(child: _buildList()),
           Row(children: [
+            IconButton(
+                onPressed: () => {_locateMe()},
+                icon: Icon(Icons.my_location)
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -195,9 +201,48 @@ class _HomePageState extends State<HomePage> {
     RegExp urlRegex = RegExp(
         r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
     );
+    RegExp latlngRegex = RegExp(
+        r"^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$"
+    );
+
     bool isUri = urlRegex.hasMatch(content);
     if (isUri) {
       launch(urlRegex.firstMatch(content)?.group(0) ?? "");
+    } else {
+      String ? latLngUri = latlngRegex.firstMatch(content)?.group(0);
+      if (latLngUri != null) {
+        double latitude = double.parse(latLngUri.split(',')[0]);
+        String? longitudeS = latLngUri.split(',')[1];
+        if (longitudeS != null) {
+          double longitude = double.parse(longitudeS);
+          Navigator.of(context).pushNamed(ROUTE_MAP_PAGE, arguments: LatLng(latitude, longitude));
+        }
+      }
+    }
+  }
+
+  void _locateMe() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied)
+      Geolocator.requestPermission();
+    else if (permission == LocationPermission.deniedForever)
+      return;
+
+    if (serviceEnabled && permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      Geolocator.getCurrentPosition().then(
+          (position) {
+            tecMsg.text = '${position.latitude}, ${position.longitude}';
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Position received"),
+                )
+            );
+          },
+        onError: (_, error) => log("Error while fetching position : ${error.toString()}")
+      );
     }
   }
 
