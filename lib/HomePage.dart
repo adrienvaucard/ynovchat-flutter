@@ -88,21 +88,41 @@ class _HomePageState extends State<HomePage> {
         return ListView.separated(
             itemCount: snapshot.data!.length,
             separatorBuilder: (BuildContext context, int index) => const Divider(thickness: 1.5),
-            itemBuilder: (context, index) =>
-              ListTile(
-                //leading: Image.network("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/6e443f00-bb6b-41ea-ba1a-f0c52dfb7cdc/ddrhs33-df39d039-d9ec-4450-b3a6-5c125a38e1e7.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzZlNDQzZjAwLWJiNmItNDFlYS1iYTFhLWYwYzUyZGZiN2NkY1wvZGRyaHMzMy1kZjM5ZDAzOS1kOWVjLTQ0NTAtYjNhNi01YzEyNWEzOGUxZTcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.RnDoWNFkVfodcv1boGZ1lafSLMbTSwhe-37omwoGtA4"),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(snapshot.data![index].author.username),
-                    Text(
-                      formatDateString(snapshot.data![index].created_at),
-                      style: TextStyle(fontStyle: FontStyle.italic)
-                    ),
-                  ],
-                ),
-                subtitle: Text(snapshot.data![index].content),
-              )
+            itemBuilder: (context, index) {
+              if(!snapshot.data![index].isImage){
+                return ListTile(
+                  //leading: Image.network("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/6e443f00-bb6b-41ea-ba1a-f0c52dfb7cdc/ddrhs33-df39d039-d9ec-4450-b3a6-5c125a38e1e7.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzZlNDQzZjAwLWJiNmItNDFlYS1iYTFhLWYwYzUyZGZiN2NkY1wvZGRyaHMzMy1kZjM5ZDAzOS1kOWVjLTQ0NTAtYjNhNi01YzEyNWEzOGUxZTcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.RnDoWNFkVfodcv1boGZ1lafSLMbTSwhe-37omwoGtA4"),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(snapshot.data![index].author.username),
+                      Text(
+                          formatDateString(snapshot.data![index].created_at),
+                          style: TextStyle(fontStyle: FontStyle.italic)
+                      ),
+                    ],
+                  ),
+                  subtitle: Text(snapshot.data![index].content),
+                );
+              } else {
+                Uint8List _bytes;
+                _bytes = const Base64Decoder().convert(snapshot.data![index].content);
+                return ListTile(
+                  //leading: Image.network("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/6e443f00-bb6b-41ea-ba1a-f0c52dfb7cdc/ddrhs33-df39d039-d9ec-4450-b3a6-5c125a38e1e7.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzZlNDQzZjAwLWJiNmItNDFlYS1iYTFhLWYwYzUyZGZiN2NkY1wvZGRyaHMzMy1kZjM5ZDAzOS1kOWVjLTQ0NTAtYjNhNi01YzEyNWEzOGUxZTcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.RnDoWNFkVfodcv1boGZ1lafSLMbTSwhe-37omwoGtA4"),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(snapshot.data![index].author.username),
+                      Text(
+                          formatDateString(snapshot.data![index].created_at),
+                          style: TextStyle(fontStyle: FontStyle.italic)
+                      ),
+                    ],
+                  ),
+                  subtitle: Image.memory(_bytes, fit: BoxFit.fitWidth),
+                );
+              }
+            }
         );
       }
     );
@@ -110,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
   String formatDateString(String isoDate) {
     DateFormat df = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSSZ", "fr_FR");
-    DateTime dateTime = df.parse(isoDate);
+    DateTime dateTime = df.parse(isoDate).toLocal();
     return format(dateTime, locale: "fr_short");
   }
 
