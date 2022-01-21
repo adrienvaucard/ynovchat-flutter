@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ynov_chat_flutter">
+
    <application
         android:label="ynov_chat_flutter"
         android:name="${applicationName}"
