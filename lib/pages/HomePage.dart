@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:latlng/latlng.dart';
@@ -31,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   late Stream<List<Message>> _streamMsgs;
   late TextEditingController tecMsg;
   late FlutterSecureStorage storage ;
+  final ImagePicker ip = ImagePicker();
 
   @override
   void initState() {
@@ -62,6 +64,9 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: _buildList()),
           Row(children: [
             IconButton(
+                onPressed: () => {_pickImage()},
+                icon: Icon(Icons.upload_file)
+            ),IconButton(
                 onPressed: () => {_locateMe()},
                 icon: Icon(Icons.my_location)
             ),
@@ -218,6 +223,13 @@ class _HomePageState extends State<HomePage> {
           Navigator.of(context).pushNamed(ROUTE_MAP_PAGE, arguments: LatLng(latitude, longitude));
         }
       }
+    }
+  }
+
+  void _pickImage() async {
+    XFile? imagePicked = await ip.pickImage(source: ImageSource.gallery);
+    if (imagePicked != null) {
+      log(imagePicked.name);
     }
   }
 
